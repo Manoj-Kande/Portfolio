@@ -1,0 +1,502 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* ============================================================
+   Portfolio theme — single dark accent system.
+   --bg       near-black page background
+   --surface  card / panel surface
+   --elevated raised panels (diagrams, visuals)
+   --line     hairline dividers
+   --line-bright  borders that need to read clearly
+   --text     primary text
+   --muted    secondary text (WCAG AA on --bg: 6.49:1)
+   --dim      tertiary text (WCAG AA on --bg: 5.52:1, was 3.42:1)
+   --accent   single accent color (#c8f169 lime)
+   --accent-dim  accent at lower chroma for borders / labels
+   ============================================================ */
+:root {
+  color-scheme: dark;
+  --bg: #070807;
+  --surface: #0c0f0d;
+  --elevated: #111512;
+  --line: #202923;
+  --line-bright: #354238;
+  --text: #eef2ed;
+  --muted: #8a968d;
+  --dim: #7a8a80;
+  --accent: #c8f169;
+  --accent-dim: #78953b;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-primary: var(--accent);
+  --color-border: var(--line);
+  --color-muted-foreground: var(--muted);
+}
+
+* { box-sizing: border-box; border-color: var(--line); }
+html { scroll-behavior: smooth; }
+/* Visible keyboard focus rings on all interactive elements.
+   Default outline:none is bad for keyboard users — recruiters who tab through
+   need to see where they are. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.button:focus-visible, .resume:focus-visible, .nav-links a:focus-visible, .text-link:focus-visible, .hero-meta a:focus-visible, .skills-toggle:focus-visible, .project-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* Skip-to-content link — visually hidden until focused by keyboard users. */
+.skip-link { position: absolute; top: -100px; left: 18px; z-index: 100; padding: 12px 18px; background: var(--accent); color: #10130e; font: 700 12px ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; border-radius: 8px; transition: top .2s ease; }
+.skip-link:focus { top: 18px; }
+/* body: solid dark background — no decorative center line, no gradients-as-decoration */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+a { color: inherit; text-decoration: none; }
+.container { width: min(1200px, calc(100% - 80px)); margin-inline: auto; }
+
+/* ============================ NAV ============================ */
+/* Pill-shaped floating navbar — height bumped 58→72px, more padding.
+   Matches reference aesthetic: rounded full, generous whitespace, subtle border. */
+.nav-wrap { position: sticky; top: 18px; z-index: 20; }
+.nav {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 26px;
+  border: 1px solid #2a352d;
+  background: #0c0f0df5;
+  backdrop-filter: blur(20px);
+  border-radius: 999px;
+  box-shadow: 0 14px 50px #0008;
+}
+.wordmark { display: flex; align-items: baseline; gap: 2px; font: 700 23px/1 ui-monospace, monospace; letter-spacing: -.08em; }
+.wordmark span { color: var(--text); }
+.wordmark b { color: var(--accent); }
+.wordmark small { margin-left: 14px; color: var(--dim); font: 600 11px ui-monospace, monospace; letter-spacing: .14em; }
+/* Nav links — pill-style buttons with leading slash prefix (terminal aesthetic).
+   Bumped 12px → 13px, weight 600, generous padding. */
+.nav-links { display: flex; align-items: center; gap: 6px; color: var(--muted); font: 600 13px ui-monospace, monospace; letter-spacing: .08em; text-transform: lowercase; }
+.nav-links > a { display: inline-flex; align-items: center; padding: 11px 16px; border-radius: 999px; transition: color .2s ease, background .2s ease; }
+.nav-links > a:hover { color: var(--accent); background: #1a2118; }
+.nav-links > a:hover .nav-slash { color: var(--accent); }
+.nav-slash { color: var(--dim); margin-right: 6px; transition: color .2s ease; font-weight: 400; }
+.nav-links a:hover, .text-link:hover { color: var(--accent); }
+/* Resume button — bigger pill, bumped padding from 11×14 → 13×22 */
+.resume { display: inline-flex; gap: 9px; align-items: center; padding: 13px 22px; margin-left: 8px; border: 1px solid var(--accent); background: var(--accent); color: #10130e; font: 700 12px ui-monospace, monospace; letter-spacing: .14em; border-radius: 999px; transition: transform .2s ease, box-shadow .2s ease; }
+.resume svg { width: 14px; height: 14px; }
+.resume:hover { transform: translateY(-2px); box-shadow: 0 8px 20px #c8f16930; }
+.menu-button { display: none; background: none; border: 0; color: var(--text); width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 12px; }
+.menu-button:hover { background: #1a2118; }
+
+/* ============================ HERO ============================ */
+.hero { display: grid; grid-template-columns: 1fr .86fr; gap: 8%; align-items: center; min-height: 680px; padding: 125px 0 105px; }
+/* Section labels — large enough to read as section markers, not whisper-text.
+   Bumped from 10px → 15px monospace, weight 600, accent color so they actually
+   function as visible "side headings" per recruiter-feedback. */
+.section-label {
+  color: var(--accent);
+  font: 600 15px/1 ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: .14em;
+  display: inline-block;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-bright);
+  margin-bottom: 36px;
+}
+.eyebrow, .project-kicker, .diagram-label, .visual-header, .map-toolbar, .map-caption, .map-footer, .role-meta, .overline, .skill-row > span, .impact-heading, .chapter, .flow-copy > small {
+  font: 11px/1.4 ui-monospace, SFMono-Regular, monospace; letter-spacing: .12em;
+}
+.eyebrow { color: var(--muted); }
+.eyebrow b { color: var(--accent-dim); font-weight: 400; }
+.status-dot, .live i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 8px; box-shadow: 0 0 0 4px #c8f16918; }
+.hero h1 { margin: 27px 0 22px; font: 500 clamp(56px, 7.4vw, 104px)/.89 Arial, sans-serif; letter-spacing: -.085em; }
+.hero h1 em, .contact h2 em { color: var(--accent); font-style: normal; }
+.hero-lede { max-width: 520px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+.hero-actions, .contact-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 32px; }
+/* Resume CTA in hero — matches secondary button but with a download icon. */
+.resume-cta { border-color: var(--accent-dim); color: var(--accent); }
+.resume-cta:hover { background: #1a2118; border-color: var(--accent); }
+.button { display: inline-flex; align-items: center; gap: 8px; padding: 13px 16px; border: 1px solid var(--line-bright); font: 11px ui-monospace, monospace; letter-spacing: .08em; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+.button:hover { transform: translateY(-2px); }
+.button.primary { background: var(--accent); border-color: var(--accent); color: #10130e; }
+.button.secondary:hover { border-color: var(--accent); color: var(--accent); }
+.hero-meta { display: flex; gap: 22px; margin-top: 34px; color: var(--dim); font: 10px ui-monospace, monospace; letter-spacing: .1em; }
+.hero-meta a:hover { color: var(--accent); }
+
+/* ============================ SYSTEM MAP (hero visual) ============================ */
+.system-map { padding: 18px; border: 1px solid var(--line-bright); background: linear-gradient(145deg, #111612, #0b0e0c); box-shadow: 18px 18px 0 #0d110e; position: relative; }
+.system-map:before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(#bfd6b20a 1px, transparent 1px), linear-gradient(90deg, #bfd6b20a 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, #fff, transparent);
+}
+.map-toolbar, .map-footer { position: relative; display: flex; justify-content: space-between; color: var(--dim); }
+.live { color: var(--accent); }
+.live i { margin: 0 6px 0 0; width: 5px; height: 5px; }
+.map-canvas { position: relative; margin: 30px 12px 26px; }
+.map-caption { color: var(--dim); margin-bottom: 14px; }
+.map-caption b { color: var(--accent); font-weight: 400; }
+.map-node { position: relative; display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 10px; padding: 13px 12px; border: 1px solid var(--line-bright); background: #101511e8; }
+.map-node span, .map-node small { color: var(--dim); font: 9px ui-monospace, monospace; }
+.map-node strong { font: 11px ui-monospace, monospace; letter-spacing: .1em; }
+.map-node small { text-align: right; }
+.map-node.active, .map-node.result { border-color: var(--accent-dim); box-shadow: 0 0 24px #c8f16912; }
+.map-node.active strong, .map-node.result strong { color: var(--accent); }
+.map-path { height: 27px; border-left: 1px dashed var(--accent-dim); margin-left: 17px; position: relative; }
+.map-path i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); left: -3px; top: 10px; animation: packet 2.4s infinite ease-in-out; }
+.map-path.short { height: 22px; }
+.map-split { height: 24px; display: flex; margin-left: 17px; }
+.map-split div { width: 50%; border-left: 1px dashed var(--accent-dim); border-top: 1px dashed var(--accent-dim); }
+.map-split div + div { border-left: 0; border-right: 1px dashed var(--accent-dim); }
+.map-branches { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.map-footer { border-top: 1px solid var(--line); padding-top: 14px; }
+.map-footer b { color: var(--text); font-weight: 400; margin-left: 5px; }
+@keyframes packet { 0% { transform: translateY(-11px); opacity: 0; } 20%, 80% { opacity: 1; } 100% { transform: translateY(11px); opacity: 0; } }
+
+/* ============================ IMPACT STRIP ============================ */
+.impact { border-block: 1px solid var(--line); }
+.impact-heading { display: flex; justify-content: space-between; padding: 15px 0 0; color: var(--accent-dim); }
+.impact-heading small { color: var(--dim); font: 9px ui-monospace, monospace; }
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); }
+.metric { position: relative; padding: 28px 24px 27px; border-right: 1px solid var(--line); }
+.metric:first-child { padding-left: 0; }
+.metric:last-child { border: 0; }
+.metric strong { display: block; color: var(--text); font: 500 40px/1 Arial; letter-spacing: -.08em; }
+.metric span { display: block; margin-top: 10px; color: var(--muted); font: 10px ui-monospace, monospace; letter-spacing: .1em; }
+.metric i { display: block; width: 26px; height: 2px; background: var(--accent); margin-top: 20px; transition: width .25s; }
+.metric:hover strong { color: var(--accent); }
+.metric:hover i { width: 56px; }
+
+/* ============================ SECTION SCAFFOLD ============================ */
+/* Each section gets a visible top border so sections don't bleed into one another.
+   Recruiter-feedback: "no clear difference between sections" → fixed. */
+.section {
+  padding-top: 110px;
+  border-top: 1px solid var(--line);
+}
+.section:first-of-type { border-top: 0; }
+/* ============================ SECTION BLOCK WRAPPER ============================ */
+/* Every section's content sits inside a bordered .section-block so the section
+   reads as one clearly bounded card on the page. */
+.section-block {
+  padding: 44px 44px 48px;
+  border: 1px solid var(--line-bright);
+  background: var(--surface);
+  border-radius: 8px;
+}
+.intro-content { display: grid; grid-template-columns: 1.1fr 1fr; gap: 12%; margin-top: 0; }
+/* Section H2 bumped back up — was clamp(34-54px) → now clamp(40-66px).
+   Visible enough to scan, but still smaller than the hero h1. */
+.intro h2, .section-heading h2, .stack-intro h2 { margin: 0; font: 500 clamp(40px, 5vw, 66px)/1.0 Arial; letter-spacing: -.07em; }
+.intro h2 span { color: var(--muted); }
+/* Bumped body content from 16px → 18px for readability. */
+.intro p, .stack-intro p { max-width: 480px; color: var(--muted); font-size: 18px; line-height: 1.7; }
+.interest-grid { display: grid; grid-template-columns: 1fr 1fr; max-width: 460px; margin-top: 37px; border-top: 1px solid var(--line); }
+.interest-grid span { padding: 13px 0; border-bottom: 1px solid var(--line); color: var(--muted); font: 11px ui-monospace, monospace; letter-spacing: .1em; }
+.interest-grid span:nth-child(odd) { color: var(--text); }
+
+/* ============================ EXPERIENCE ============================ */
+/* Experience section-block: now wraps heading + grid in a bordered card. */
+.experience-block { padding: 36px 40px 40px; }
+.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin: 0 0 40px; }
+/* Bumped overline from 11px → 13px, weight 700, brighter color */
+.overline { color: var(--accent); margin: 0 0 18px; font: 700 13px ui-monospace, monospace; letter-spacing: .14em; }
+.role-meta { display: grid; gap: 7px; text-align: right; color: var(--muted); font-size: 11px; }
+.experience-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: 8%; }
+/* Experience chapter list: brighter separators + tighter hover hit area. */
+.chapter-list { border-top: 1px solid var(--line-bright); }
+.chapter { width: 100%; display: grid; grid-template-columns: 38px 1fr auto; gap: 16px; align-items: center; padding: 22px 0; text-align: left; color: var(--muted); background: none; border: 0; border-bottom: 1px solid var(--line-bright); cursor: pointer; }
+.chapter-list .chapter:last-child { border-bottom: 0; }
+.chapter span { color: var(--dim); }
+.chapter strong { font: 400 20px Arial; letter-spacing: -.03em; }
+.chapter svg { opacity: 0; transition: opacity .2s, transform .2s; }
+.chapter:hover, .chapter.active { color: var(--text); }
+.chapter.active strong { color: var(--accent); }
+.chapter.active svg, .chapter:hover svg { opacity: 1; transform: translate(2px, -2px); color: var(--accent); }
+.experience-visual { min-height: 360px; padding: 20px; border: 1px solid var(--line-bright); background: var(--surface); box-shadow: 12px 12px 0 #0d110e; }
+.visual-header { display: flex; justify-content: space-between; color: var(--dim); }
+.visual-flow { position: relative; display: grid; grid-template-columns: 1fr 1.4fr; gap: 28px; align-items: center; min-height: 270px; }
+.flow-line { position: absolute; left: 24px; top: 50px; bottom: 50px; border-left: 1px dashed var(--accent-dim); }
+.flow-box { position: relative; margin-left: 0; padding: 25px 18px; border: 1px solid var(--accent-dim); background: #151b15; }
+.flow-box span { display: block; color: var(--muted); font: 9px ui-monospace, monospace; letter-spacing: .1em; }
+.flow-box strong { display: block; margin: 8px 0; color: var(--accent); font: 500 34px Arial; letter-spacing: -.08em; }
+.flow-box small { color: var(--muted); font: 9px ui-monospace, monospace; }
+.flow-copy h3 { margin: 0 0 12px; font: 500 26px Arial; letter-spacing: -.06em; }
+/* Shrunk experience body content slightly — was 16px, now 14.5px for tighter density. */
+.flow-copy p { margin: 0 0 18px; color: var(--muted); line-height: 1.6; font-size: 14.5px; }
+.flow-copy > small { color: var(--accent-dim); }
+
+/* ============================ PROJECTS (rich layout, each in own section-block) ============================ */
+.projects { padding-bottom: 30px; }
+/* Projects container — direct children are .section-block.project articles, so they
+   inherit the section-block border/padding automatically. This gap spaces them apart. */
+.projects > .section-block.project { margin-bottom: 32px; }
+.projects > .section-block.project:last-child { margin-bottom: 0; }
+/* Each project's internal 2-col layout (copy | diagram) */
+.project { display: grid; grid-template-columns: 1fr 1fr; gap: 9%; }
+/* Collapsible projects start as 1-col (just the copy), expand to 2-col when toggled open */
+.project-collapsible { grid-template-columns: 1fr; gap: 0; }
+.project-collapsible .project-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 9%; }
+/* When the project is collapsed (no service-flow rendered), project-preview collapses to 1 col */
+.project-collapsible .project-preview > .project-copy:only-child,
+.project-collapsible .project-preview:not(:has(.service-flow)) { grid-template-columns: 1fr; }
+.project-copy h2 { margin: 21px 0 7px; font: 500 50px Arial; letter-spacing: -.09em; color: var(--text); }
+.project-copy h3 { margin: 0 0 24px; font: 400 21px/1.25 Arial; letter-spacing: -.03em; color: var(--accent); }
+.project-copy p { max-width: 500px; color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+.project-kicker { color: var(--accent-dim); font: 600 11px ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; }
+.project-kicker span { margin-left: 13px; color: var(--accent); }
+.project-links { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 8px; }
+/* Toggle button row — sits at the bottom of collapsible projects, centered.
+   Same pill aesthetic as the skills-toggle. */
+.project-toggle-row { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line-bright); display: flex; justify-content: center; }
+.project-toggle { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border: 1px solid var(--line-bright); background: var(--bg); color: var(--text); font: 600 11px ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; border-radius: 999px; cursor: pointer; transition: border-color .2s ease, color .2s ease, transform .2s ease; }
+.project-toggle:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+.project-toggle svg { width: 14px; height: 14px; }
+
+.tag-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 26px 0; }
+.tag-list span { padding: 7px 10px; border: 1px solid var(--line-bright); color: var(--muted); font: 600 10px ui-monospace, monospace; letter-spacing: .06em; }
+.text-link { display: inline-flex; align-items: center; gap: 7px; color: var(--accent); font: 600 11px ui-monospace, monospace; letter-spacing: .1em; }
+.text-link:hover { color: var(--text); }
+/* Diagram + service-flow panels (right side of each project) */
+.project-diagram, .service-flow { padding: 24px; border: 1px solid var(--line-bright); background: var(--elevated); border-radius: 6px; }
+.diagram-label { display: flex; align-items: center; gap: 8px; color: var(--muted); font: 600 11px ui-monospace, monospace; letter-spacing: .1em; }
+.architecture { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 18px 0 27px; }
+.arch-wrap { display: flex; align-items: center; gap: 7px; }
+.arch-wrap b { color: var(--accent-dim); font-weight: 400; }
+.arch-node { padding: 11px 10px; border: 1px solid var(--line-bright); color: var(--text); font: 10px ui-monospace, monospace; letter-spacing: .06em; }
+.arch-node i { display: inline-block; width: 5px; height: 5px; margin-right: 7px; border-radius: 50%; background: var(--accent); }
+.diagram-divider { border-top: 1px solid var(--line); margin: 26px 0; }
+.diagram-note { color: var(--muted); font: 10px ui-monospace, monospace; }
+/* Food Delivery project has a slightly wider copy column */
+.project-secondary { grid-template-columns: 1.2fr .8fr; }
+.service-flow { display: flex; flex-direction: column; justify-content: center; }
+.service-chain { display: grid; place-items: center; gap: 7px; }
+.service-chain span { min-width: 190px; padding: 11px; border: 1px solid var(--line-bright); text-align: center; font: 10px ui-monospace, monospace; letter-spacing: .06em; }
+.service-chain span.accent { border-color: var(--accent-dim); color: var(--accent); }
+.service-chain b { color: var(--accent-dim); font-weight: 400; }
+.service-stats { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); }
+.service-stats strong { color: var(--accent); font: 500 20px Arial; letter-spacing: -.04em; }
+.service-stats span { align-self: center; color: var(--muted); font: 9px ui-monospace, monospace; letter-spacing: .1em; }
+
+/* ============================ PARSEVAULT (dedicated full-width section) ============================ */
+.project-insert { padding-bottom: 30px; }
+/* ParseVault is its own section-block — restore the full rich styling with larger
+   header, generous padding, and the architecture diagram with the offset shadow. */
+.parsevault-card { padding: 48px 48px 52px; }
+.parsevault-header { display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 0; }
+.parsevault-header h2 { margin: 20px 0 14px; font: 500 clamp(48px, 6.5vw, 84px)/.9 Arial; letter-spacing: -.09em; color: var(--text); }
+.parsevault-lede { max-width: 720px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
+.parsevault-github { flex: none; margin-bottom: 6px; }
+.parsevault-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 8%; margin-top: 48px; }
+.parsevault-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.parsevault-points > div { padding: 20px 16px; border: 1px solid var(--line-bright); background: linear-gradient(145deg, #111612, #0b0e0c); border-radius: 4px; }
+.parsevault-points strong { color: var(--accent); font: 600 11px ui-monospace, monospace; letter-spacing: .12em; }
+.parsevault-points h3 { margin: 22px 0 9px; font: 500 17px Arial; letter-spacing: -.03em; color: var(--text); }
+.parsevault-points p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+.parsevault-details .tag-list { margin-top: 26px; }
+.parsevault-architecture { padding: 24px; border: 1px solid var(--line-bright); background: var(--elevated); box-shadow: 12px 12px 0 #0d110e; border-radius: 6px; }
+.architecture-title { display: flex; justify-content: space-between; align-items: center; color: var(--accent); font: 600 11px ui-monospace, monospace; letter-spacing: .14em; }
+.architecture-title small { color: var(--dim); font: 9px ui-monospace, monospace; }
+.parsevault-layers { display: grid; justify-items: center; gap: 8px; margin: 26px 0; }
+.parsevault-layers > i { color: var(--accent-dim); font-style: normal; }
+.parsevault-layer { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 14px; border: 1px solid var(--line-bright); font: 10px ui-monospace, monospace; letter-spacing: .06em; }
+.parsevault-layer span { color: var(--dim); letter-spacing: .1em; }
+.parsevault-layer b { font-weight: 400; color: var(--text); text-align: right; }
+.parsevault-layer.outer { border-color: #536348; }
+.parsevault-layer.middle { border-color: #819a4e; background: #151b15; }
+.parsevault-layer.core { border-color: var(--accent); background: #182016; }
+.parsevault-layer.core b { color: var(--accent); }
+.parsevault-flow-label { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font: 9px ui-monospace, monospace; letter-spacing: .1em; }
+.parsevault-flow-label b { color: var(--accent-dim); font-weight: 400; }
+
+/* ============================ SKILLS (collapsible) ============================ */
+/* Collapsed view: tagline + 'View full stack' button only. Expanded view
+   (revealed on click) shows stack-focus chips + full skills grid. */
+.skills-block { padding: 36px 40px 40px; }
+.skills-collapsed { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+.skills-tagline { flex: 1; min-width: 280px; }
+.skills-tagline h2 { margin: 0 0 12px; font: 500 clamp(34px, 4vw, 52px)/1.0 Arial; letter-spacing: -.07em; color: var(--text); }
+.skills-tagline h2 span { color: var(--accent); }
+.skills-tagline p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 580px; }
+/* Toggle button — pill shape, matches nav resume button aesthetic */
+.skills-toggle { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border: 1px solid var(--line-bright); background: var(--bg); color: var(--text); font: 600 11px ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; border-radius: 999px; cursor: pointer; transition: border-color .2s ease, color .2s ease, transform .2s ease; flex: none; }
+.skills-toggle:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+.skills-toggle svg { width: 14px; height: 14px; }
+/* Expanded content — appears when toggle is clicked */
+.skills-expanded { margin-top: 36px; padding-top: 32px; border-top: 1px solid var(--line-bright); }
+.stack-intro { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin: 0 0 28px; }
+.stack-intro p { margin: 0; }
+/* Shrunk stack-focus from clamp(22-39px) → clamp(15-20px) so it's not visually overwhelming */
+.stack-focus { display: flex; flex-wrap: wrap; align-items: baseline; gap: 13px 20px; padding: 20px 0; border-block: 1px solid var(--line); color: var(--muted); font: 500 clamp(15px, 2vw, 20px) Arial; letter-spacing: -.04em; }
+.stack-focus span:first-child, .stack-focus span:nth-child(2) { color: var(--text); }
+.skills-grid { margin-top: 14px; }
+/* Skill rows: brighter bottom border + slightly more vertical padding. */
+.skill-row { display: grid; grid-template-columns: 200px 1fr; gap: 30px; padding: 18px 0; border-bottom: 1px solid var(--line-bright); }
+.skill-row:last-child { border-bottom: 0; }
+.skill-row > span { color: var(--accent); font: 600 12px ui-monospace, monospace; letter-spacing: .12em; }
+.skill-row p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 14.5px; }
+
+/* ============================ PRINCIPLES ============================ */
+.principles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-top: 50px; }
+/* Each principle wrapped in a full bordered card so it reads as one block. */
+.principle { position: relative; padding: 22px 20px; border: 1px solid var(--line-bright); background: var(--surface); border-radius: 4px; transition: border-color .25s ease; }
+.principle:hover { border-color: var(--accent-dim); }
+.principle > span { display: block; color: var(--accent-dim); font: 600 12px ui-monospace, monospace; letter-spacing: .12em; }
+.principle svg { margin-top: 22px; color: var(--accent); }
+.principle h3 { margin: 12px 0 8px; font: 600 13px ui-monospace, monospace; letter-spacing: .12em; }
+.principle p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+
+/* ============================ EDUCATION + ACHIEVEMENTS ============================ */
+/* Each column gets its own bordered card so education + achievements read as
+   two distinct blocks, not a flat grid. */
+.credentials { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.credentials > div { padding: 28px 28px 30px; border: 1px solid var(--line-bright); background: var(--surface); border-radius: 4px; }
+.credentials h2 { margin: 0 0 10px; font: 500 32px Arial; letter-spacing: -.06em; }
+.credentials p, .credentials li { color: var(--muted); font-size: 15.5px; line-height: 1.65; }
+.credentials strong { display: block; margin-top: 26px; color: var(--accent); font: 500 20px Arial; }
+.credentials strong span { margin-left: 10px; color: var(--muted); font: 9px ui-monospace, monospace; }
+.credentials ul { list-style: none; padding: 26px 0 0; margin: 0; }
+.credentials li { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.credentials li b { color: var(--text); font-weight: 400; }
+
+/* Contact section: visible bordered block so the closing CTA reads as one unit. */
+.contact { padding-top: 110px; padding-bottom: 120px; border-top: 1px solid var(--line); }
+.contact-inner { padding: 40px 36px 42px; border: 1px solid var(--line-bright); background: var(--surface); border-radius: 4px; }
+.contact h2 { margin: 0 0 20px; font: 500 clamp(44px, 6.5vw, 88px)/.92 Arial; letter-spacing: -.09em; }
+.contact > .section-label { margin-bottom: 32px; }
+.contact > p { max-width: 520px; color: var(--muted); line-height: 1.7; font-size: 18px; }
+
+/* ============================ 404 NOT FOUND ============================ */
+.not-found { min-height: 80vh; display: flex; align-items: center; padding: 80px 0; }
+.not-found h1 { margin: 24px 0 18px; font: 500 clamp(54px, 8vw, 104px)/.92 Arial; letter-spacing: -.09em; color: var(--text); }
+.not-found h1 em { color: var(--accent); font-style: normal; }
+.not-found p { max-width: 520px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+.not-found .hero-actions { margin-top: 32px; }
+
+/* ============================ FOOTER (minimal centered copyright) ============================ */
+.footer { display: flex !important; align-items: center; justify-content: center; text-align: center; padding: 32px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font: 400 13px Arial, sans-serif; letter-spacing: .02em; }
+
+/* ============================ TABLET (≤1024px) ============================ */
+@media (max-width: 1024px) {
+  .container { width: min(1100px, calc(100% - 56px)); }
+  .section { padding-top: 90px; }
+  .hero { grid-template-columns: 1fr; gap: 60px; min-height: auto; padding: 110px 0 90px; }
+  .intro-content { grid-template-columns: 1fr; gap: 36px; }
+  .experience-grid { grid-template-columns: 1fr; gap: 36px; }
+  /* Rich projects: stack copy + diagram vertically on tablet.
+     Each project is its own .section-block so just adjust internal grid. */
+  .project, .project-secondary, .project-collapsible .project-preview { grid-template-columns: 1fr; gap: 28px; }
+  .project-copy h2 { font-size: 42px; }
+  .project-diagram, .service-flow { margin-top: 8px; }
+  /* ParseVault: stack points + architecture vertically on tablet */
+  .parsevault-grid { grid-template-columns: 1fr; gap: 32px; margin-top: 36px; }
+  .parsevault-points { grid-template-columns: repeat(3, 1fr); }
+  .parsevault-card { padding: 36px 32px 40px; }
+  .experience-block { padding: 28px 28px 32px; }
+  .credentials { grid-template-columns: 1fr; gap: 56px; }
+  .principles { grid-template-columns: repeat(2, 1fr); gap: 30px 26px; }
+  .visual-flow { grid-template-columns: 1fr 1.2fr; gap: 22px; }
+  .metric { padding: 24px 18px; }
+  .metric strong { font-size: 34px; }
+  .stack-focus { gap: 15px 22px; }
+}
+
+/* ============================ MOBILE (≤760px) ============================ */
+@media (max-width: 760px) {
+  .container { width: calc(100% - 36px); }
+  .nav-wrap { top: 12px; }
+  .nav { height: 60px; padding: 0 18px; border-radius: 999px; }
+  .wordmark small { display: none; }
+  .menu-button { display: inline-flex; }
+  .nav-links { display: none; position: absolute; left: 0; right: 0; top: 70px; padding: 22px 18px; flex-direction: column; align-items: stretch; gap: 6px; border: 1px solid var(--line-bright); border-radius: 16px; background: var(--surface); }
+  .nav-links.open { display: flex; }
+  .nav-links > a { padding: 14px 18px; }
+  .nav-links .resume { margin: 6px 0 0; justify-content: center; }
+  .hero { padding: 96px 0 75px; gap: 48px; }
+  .hero h1 { font-size: 58px; }
+  .eyebrow { max-width: 320px; line-height: 1.7; }
+  .hero-lede { font-size: 16px; }
+  .hero-meta { flex-wrap: wrap; }
+  .system-map { margin-top: 0; }
+  .metrics { grid-template-columns: 1fr 1fr; }
+  .impact-heading { display: block; }
+  .impact-heading small { display: block; margin-top: 7px; }
+  .metric, .metric:first-child { padding: 21px 12px; }
+  .metric:first-child { padding-left: 0; }
+  .metric:nth-child(2) { border-right: 0; }
+  .metric strong { font-size: 29px; }
+  .metric span { font-size: 9px; }
+  .section { padding-top: 90px; }
+  .intro-content { margin-top: 0; gap: 28px; }
+  .section-block { padding: 28px 22px 30px; border-radius: 6px; }
+  .intro h2 { margin-bottom: 24px; }
+  .intro h2, .section-heading h2, .stack-intro h2 { font-size: 36px; }
+  .section-label { font-size: 13px; margin-bottom: 28px; }
+  .section-heading { display: block; margin: 0 0 36px; }
+  .role-meta { text-align: left; margin-top: 25px; }
+  .experience-visual { margin-top: 0; box-shadow: 8px 8px 0 #0d110e; }
+  .visual-flow { grid-template-columns: 1fr; gap: 22px; padding: 20px 0; }
+  .flow-line { display: none; }
+  .flow-box { margin: 0; }
+  /* Projects: already stacked at tablet, just shrink type on mobile */
+  .project-copy h2 { font-size: 34px; }
+  .project-copy h3 { font-size: 18px; }
+  .project-copy p { font-size: 14px; }
+  .project-diagram, .service-flow { padding: 20px; }
+  .project-toggle-row { margin-top: 24px; padding-top: 22px; }
+  .arch-node { font-size: 9px; padding: 9px 8px; }
+  .service-chain span { min-width: 160px; padding: 9px; font-size: 9px; }
+  .service-stats strong { font-size: 18px; }
+  /* ParseVault on mobile */
+  .parsevault-card { padding: 28px 22px 30px; }
+  .parsevault-header { display: block; margin-bottom: 0; }
+  .parsevault-github { margin-top: 22px; }
+  .parsevault-grid { margin-top: 28px; }
+  .parsevault-points { grid-template-columns: 1fr; }
+  .parsevault-architecture { margin-top: 28px; box-shadow: 8px 8px 0 #0d110e; }
+  .parsevault-layer { display: block; padding: 13px 12px; }
+  .parsevault-layer b { display: block; margin-top: 8px; text-align: left; }
+  .parsevault-flow-label { font-size: 8px; }
+  /* Experience on mobile */
+  .experience-block { padding: 22px 22px 26px; }
+  .section-heading { display: block; margin: 0 0 32px; }
+  .role-meta { text-align: left; margin-top: 20px; }
+  .skills-block { padding: 28px 24px 30px; }
+  .skills-collapsed { flex-direction: column; align-items: stretch; gap: 24px; }
+  .skills-tagline p { font-size: 13px; }
+  .skills-toggle { align-self: flex-start; }
+  .skills-expanded { margin-top: 28px; padding-top: 24px; }
+  .stack-intro { display: block; margin-bottom: 24px; }
+  .stack-intro p { margin-top: 18px; font-size: 14px; }
+  .stack-focus { gap: 12px 16px; font-size: 17px; padding: 16px 0; }
+  .skill-row { grid-template-columns: 1fr; gap: 8px; }
+  .skill-row p { font-size: 14px; }
+  .principles { grid-template-columns: 1fr 1fr; gap: 30px 17px; }
+  .credentials > div + div { margin-top: 0; }
+  .contact { padding-top: 90px; padding-bottom: 90px; }
+  .contact-inner { padding: 30px 24px 32px; }
+  .footer { display: flex; padding: 24px 0 30px; }
+}
+
+/* ============================ VERY SMALL (≤380px) ============================ */
+@media (max-width: 380px) {
+  .hero h1 { font-size: 44px; }
+  .intro h2, .section-heading h2, .stack-intro h2 { font-size: 28px; }
+  .contact h2 { font-size: 30px; }
+  .project-copy h2 { font-size: 28px; }
+  .parsevault-header h2 { font-size: 40px; }
+  .principles { grid-template-columns: 1fr; }
+  .contact-inner { padding: 20px 18px 22px; }
+  .section-block { padding: 22px 18px 24px; }
+  .parsevault-card { padding: 22px 18px 26px; }
+  .experience-block { padding: 20px 18px 22px; }
+}
+
+/* ============================ MOTION PREFERENCE ============================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *:before, *:after { animation: none !important; transition: none !important; }
+}
